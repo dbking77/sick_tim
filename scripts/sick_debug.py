@@ -21,11 +21,23 @@ class SickDebug:
         resp = self.recv()
         print(resp)
 
-        # tell device to stop streaming
+        # Read identity
+        self.send("sRN DeviceIdent")
+        resp = self.recv()
+        print('Identity\t',resp)
+
+        # Read state
+        self.send("sRN SCdevicestate")
+        resp = self.recv()
+        print('Device State\t',resp)
+
+        sys.exit()
+
+        #
         self.send("sRN LMDscandata")
         time.sleep(0.1)
         resp = self.recv()
-        self.parse_response(resp)
+        self.parse_scandata(resp)
         #print(resp)
 
         # tell device to start streaming
@@ -37,13 +49,21 @@ class SickDebug:
         print("Starting ---------------------------------------")
         while True:
             resp = self.recv()
-            self.parse_response(resp)
+            self.parse_scandata(resp)
             print("---------------------------------------")
         #time.sleep(1.0)
 
-    def parse_response(self, resp):
+    @staticmethod
+    def parse_status(self, resp):
         # break response up
+
         fields = resp.split()
+        for name, val in zip(field_names, fields[:len(field_names)]):
+            print("%20s \t" % name, val)
+
+    @staticmethod
+    def parse_scandata(resp):
+        # break response up
         field_names = ['command_type', 'command', 'version_number']
         field_names += ['device_number', 'serial_number']
         field_names += ['device_status1', 'device_status2']
@@ -60,6 +80,7 @@ class SickDebug:
         #field_names += ['rssi']
         #field_names += ['time_information']
 
+        fields = resp.split()
         for name, val in zip(field_names, fields[:len(field_names)]):
             print("%20s \t" % name, val)
 
