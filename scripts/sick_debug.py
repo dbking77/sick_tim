@@ -35,20 +35,30 @@ class SickDebug:
         print(resp)
 
         print("Starting ---------------------------------------")
-        time.sleep(1.0)
-        resp = self.recv()
-        print(resp)
-        time.sleep(1.0)
+        while True:
+            resp = self.recv()
+            self.parse_response(resp)
+            print("---------------------------------------")
+        #time.sleep(1.0)
 
     def parse_response(self, resp):
         # break response up
         fields = resp.split()
         field_names = ['command_type', 'command', 'version_number']
-        field_names += ['device_number', 'serial_number', 'device_status']
+        field_names += ['device_number', 'serial_number']
+        field_names += ['device_status1', 'device_status2']
         field_names += ['telegram_counter', 'scan_counter', 'time_since_startup']
-        field_names += ['time_of_transmission', 'input_status', 'output_status']
+        field_names += ['time_of_transmission']
+        field_names += ['input_status1', 'input_status2']
+        field_names += ['output_status1', 'output_status2']
         field_names += ['reserved_byte_A']
         field_names += ['scanning_frequency', 'measurement_frequency', 'number_of_encoders']
+        field_names += ['number_16bit_channels']
+        #field_names += ['number_8bit_channels']
+        #field_names += ['name']
+        #field_names += ['comment']
+        #field_names += ['rssi']
+        #field_names += ['time_information']
 
         for name, val in zip(field_names, fields[:len(field_names)]):
             print("%20s \t" % name, val)
