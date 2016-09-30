@@ -31,6 +31,22 @@ class SickDebug:
         resp = self.recv()
         print('Device State\t',resp)
 
+        #
+        self.send("sRN LMPscancfg")
+        resp = self.recv()
+        print('Freq and Resolution\t',resp)
+
+        # Log in as Maintenance
+        #self.send("sMN SetAccessMode 02 B21ACE26")
+        self.send("sMN SetAccessMode 03 F4724744")
+        resp = self.recv()
+        print('\t',resp)
+
+        # Reboot
+        self.send("sMN mSCreboot")
+        resp = self.recv()
+        print('Reboot\t',resp)
+
         sys.exit()
 
         #
