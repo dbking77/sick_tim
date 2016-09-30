@@ -17,7 +17,9 @@ class SickDebug:
         self.sock.settimeout(1.0)
 
         # tell device to stop streaming
-        #self.send("sMN MIStopIn")
+        self.send("sEN LMDscandata 0")
+        resp = self.recv()
+        print(resp)
 
         # tell device to stop streaming
         self.send("sRN LMDscandata")
