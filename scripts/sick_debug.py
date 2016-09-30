@@ -24,10 +24,35 @@ class SickDebug:
         # tell device to stop streaming
         self.send("sRN LMDscandata")
         time.sleep(0.1)
-        self.flush()
+        resp = self.recv()
+        self.parse_response(resp)
+        #print(resp)
 
+        # tell device to start streaming
+        self.send("sEN LMDscandata 1")
+        time.sleep(0.1)
         resp = self.recv()
         print(resp)
+
+        print("Starting ---------------------------------------")
+        time.sleep(1.0)
+        resp = self.recv()
+        print(resp)
+        time.sleep(1.0)
+
+    def parse_response(self, resp):
+        # break response up
+        fields = resp.split()
+        field_names = ['command_type', 'command', 'version_number']
+        field_names += ['device_number', 'serial_number', 'device_status']
+        field_names += ['telegram_counter', 'scan_counter', 'time_since_startup']
+        field_names += ['time_of_transmission', 'input_status', 'output_status']
+        field_names += ['reserved_byte_A']
+        field_names += ['scanning_frequency', 'measurement_frequency', 'number_of_encoders']
+
+        for name, val in zip(field_names, fields[:len(field_names)]):
+            print("%20s \t" % name, val)
+
 
     def flush(self):
         # flush kernel buffer into local buffer (self.buf)
